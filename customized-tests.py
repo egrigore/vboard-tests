@@ -25,6 +25,24 @@ def test_already_open(open_valid_connection):
 	with pytest.raises(Exception):
 		open_valid_connection.open()
 
+def test_already_closed(open_valid_connection):
+	#Check that an exception is raised if the port is already closed
+	open_valid_connection.close()
+        with pytest.raises(Exception):
+		open_valid_connection.close()
+
+def test_command_before_open():
+	#check that an exception is raised if a command is triggered before port was opened
+	serial = serial_communication.SerialCommunication(0,115200)
+	with pytest.raises(Exception):
+		serial.send_receive("cli_read_time")
+
+def test_command_after_close(open_valid_connection):
+	#check that an exception is raised if a command is triggered after port was closed
+	open_valid_connection.close()
+        with pytest.raises(Exception):
+		open_valid_connection.send_receive("cli_help")
+
 def test_inexistent_command_01(open_valid_connection):
 	#Check that the help menu is returned if the command is wrong
 	serial = open_valid_connection
@@ -54,10 +72,8 @@ def test_invalid_baudrate():
 	with pytest.raises(Exception):
 		serial_communication.SerialCommunication(5,"this_should_be_integer")
 
-def test_close_multiple_times():
-	pass
 
-#functional tests
+# basic functional tests
 
 def test_help_command_01(open_valid_connection):
 	#Check that help command finishes with success
@@ -97,3 +113,13 @@ def test_cli_read_date_time_01(open_valid_connection):
 
 def test_cli_read_date_format(open_valid_connection):
 	assert "PASS" in open_valid_connection.send_receive("cli_read_date_format")	
+
+# other scenarios
+
+def test_date_format_persistency(open_valid_connection):
+	#check that the value of date_format is persistent after the connection is closed
+	open_valid_connection.send_receive("cli_write_date_format int")
+	open_valid_connection.close()
+	assert "int" == open_valid_connection.date_format
+
+
