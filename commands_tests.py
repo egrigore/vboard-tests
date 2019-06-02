@@ -44,7 +44,7 @@ def test_cli_read_date_02(open_valid_connection):
 
 def test_cli_read_date_03(open_valid_connection):
 	#check that for the int date format read_date returns the expected result: DD month YYYY
-	expected_date = datetime.now().date().strftime("%d %B %Y")
+	expected_date = datetime.now().date().strftime("%d %b %Y")
 	open_valid_connection.date_format = "int"
 	assert expected_date == open_valid_connection.send_receive("cli_read_date").split("\n")[0]
 
@@ -61,7 +61,7 @@ def test_cli_read_date_time_02(open_valid_connection):
 def test_cli_read_date_time_03(open_valid_connection):
         #check that command returns the expected value for int date_time DD month YYYY / HH:MM:SS.MSMSMS 
 	open_valid_connection.date_format = "int"
-        expected_date_time = datetime.now().strftime("%d %B %Y / %H:%M:%S.%f")[:-3]
+        expected_date_time = datetime.now().strftime("%d %b %Y / %H:%M:%S.%f")[:-3]
         assert expected_date_time in open_valid_connection.send_receive("cli_read_date_time").split("\n")[0]
 
 def test_cli_read_date_format_01(open_valid_connection):
@@ -83,11 +83,11 @@ def test_cli_write_date_format_01(open_valid_connection):
 
 # other scenarios
 
-def test_date_format_persistency(open_valid_connection):
+def test_date_format_persistency(open_valid_connection_wo_close):
 	#check that the value of date_format is persistent after the connection is closed
-	open_valid_connection.send_receive("cli_write_date_format int")
-	open_valid_connection.close()
-	assert "int" == open_valid_connection.date_format
+	open_valid_connection_wo_close.send_receive("cli_write_date_format int")
+	open_valid_connection_wo_close.close()
+	assert "int" == open_valid_connection_wo_close.date_format
 
 
 def test_write_date_format_with_caps(open_valid_connection):

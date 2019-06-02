@@ -11,11 +11,12 @@ def test_already_open(open_valid_connection):
         with pytest.raises(Exception):
                 open_valid_connection.open()
 
-def test_already_closed(open_valid_connection):
+
+def test_already_closed(open_valid_connection_wo_close):
         #Check that an exception is raised if the port is already closed
-        open_valid_connection.close()
+        open_valid_connection_wo_close.close()
         with pytest.raises(Exception):
-                open_valid_connection.close()
+                open_valid_connection_wo_close.close()
 
 def test_command_before_open():
         #check that an exception is raised if a command is triggered before port was opened
@@ -23,11 +24,11 @@ def test_command_before_open():
         with pytest.raises(Exception):
                 serial.send_receive("cli_read_time")
 
-def test_command_after_close(open_valid_connection):
+def test_command_after_close(open_valid_connection_wo_close):
         #check that an exception is raised if a command is triggered after port was closed
-        open_valid_connection.close()
+        open_valid_connection_wo_close.close()
         with pytest.raises(Exception):
-                open_valid_connection.send_receive("cli_help")
+                open_valid_connection_wo_close.send_receive("cli_help")
 
 def test_inexistent_command_01(open_valid_connection):
         #Check that the help menu is returned if the command is wrong
