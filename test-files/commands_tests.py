@@ -100,3 +100,7 @@ def test_write_date_format_twice(open_valid_connection):
 	for i in range(5):
 		open_valid_connection.send_receive("cli_write_date_format usa")
 	assert "usa" == open_valid_connection.send_receive("cli_read_date_format").split("\n")[0]
+
+def test_different_baudrate():
+	#TBD
+	pass
